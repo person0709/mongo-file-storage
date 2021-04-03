@@ -1,0 +1,10 @@
+fastapi[all]
+python-jose
+cryptography==3.3.2
+motor
+filetype
+
+# for testing
+pytest-asyncio
+httpx
+asgi-lifespan
