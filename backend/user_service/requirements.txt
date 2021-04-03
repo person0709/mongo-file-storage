@@ -1,0 +1,11 @@
+fastapi[all]
+python-jose
+cryptography==3.3.2
+passlib[bcrypt]
+sqlalchemy
+mysqlclient
+alembic
+
+# for testing
+factory-boy
+pytest
