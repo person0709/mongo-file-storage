@@ -25,10 +25,18 @@ async def open_db_connection() -> None:
     db.grid_client = AsyncIOMotorGridFSBucket(db.client["file_service"])
 
     # create index
-    await db.client["file_service"]["fs.files"].create_index([("metadata.user_id", pymongo.TEXT)])
-    await db.client["file_service"]["fs.files"].create_index([("uploadDate", pymongo.DESCENDING)])
-    await db.client["file_service"]["fs.files"].create_index([("length", pymongo.DESCENDING)])
-    await db.client["file_service"]["fs.files"].create_index([("filename", pymongo.DESCENDING)])
+    await db.client["file_service"]["fs.files"].create_index(
+        [("metadata.user_id", pymongo.TEXT)]
+    )
+    await db.client["file_service"]["fs.files"].create_index(
+        [("uploadDate", pymongo.DESCENDING)]
+    )
+    await db.client["file_service"]["fs.files"].create_index(
+        [("length", pymongo.DESCENDING)]
+    )
+    await db.client["file_service"]["fs.files"].create_index(
+        [("filename", pymongo.DESCENDING)]
+    )
 
 
 async def close_db_connection() -> None:

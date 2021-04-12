@@ -17,6 +17,9 @@ class ReadFileInfoResponse(BaseFileResponse):
 
 class UploadFileResponse(BaseFileResponse):
     filename: str
+    uploaded_at: datetime
+    size: int
+    md5: str
 
 
 class DownloadFileResponse(BaseFileResponse):
@@ -28,4 +31,16 @@ class DeleteFileResponse(BaseFileResponse):
 
 
 class ListFileInfoResponse(BaseFileResponse):
-    data: List[ReadFileInfoResponse] = []
+    files: List[ReadFileInfoResponse] = []
+
+
+class SearchFileInfoResponse(BaseFileResponse):
+    files: List[ReadFileInfoResponse] = []
+
+
+class ReadFileCountResponse(BaseFileResponse):
+    count: int
+
+
+class ReadUsageResponse(BaseFileResponse):
+    storage_used: int

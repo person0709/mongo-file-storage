@@ -1,3 +1,4 @@
+import mimetypes
 import os
 
 from fastapi import UploadFile
@@ -15,7 +16,11 @@ def check_file(file: UploadFile) -> bool:
     Returns:
         True if the file passes all validations, False if any fails
     """
-    # only accept whitelisted file types
+    # accept all image, video and audio types
+    mimetype = mimetypes.guess_type(file.filename)[0]
+    if mimetype is not None and mimetype.split("/")[0] in {"image", "audio", "video"}:
+        return True
+    # if not, only accept whitelisted file extensions
     ext = os.path.splitext(file.filename)[1]
     if ext not in settings.FILE_EXTENSION_WHITELIST:
         raise FileValidationError(f"{file.filename} is an invalid file type")

@@ -16,41 +16,20 @@ class Settings(BaseSettings):
     ROLE_FOR_UPLOAD: Set[Role] = {Role.UPLOADER, Role.ADMIN}
     ROLE_FOR_DELETE: Set[Role] = {Role.UPLOADER, Role.ADMIN}
 
-    FILE_SIZE_LIMIT_IN_MB: int = 100
+    FILE_SIZE_LIMIT: int = 500_000_000  # 500MB by default
     FILE_EXTENSION_WHITELIST: Set[str] = {
-        ".aac",
-        ".avi",
-        ".bmp",
-        ".csv",
+        ".pdf",
         ".doc",
         ".docx",
-        ".gz",
-        ".gif",
-        ".html",
-        ".ico",
-        ".ics",
-        ".jpeg",
-        ".jpg",
-        ".mid",
-        ".midi",
-        ".mp3",
-        ".mp4",
-        ".mpeg",
-        ".png",
-        ".pdf",
         ".ppt",
         ".pptx",
-        ".rar",
-        ".svg",
-        ".tar",
-        ".tiff",
-        ".tif",
-        ".txt",
-        ".wav",
         ".xls",
         ".xlsx",
-        ".zip",
+        ".txt",
+        ".csv",
     }
+
+    NO_AUTH_MODE: bool = False
 
 
 settings = Settings()

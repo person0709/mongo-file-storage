@@ -18,13 +18,16 @@ from tests.db.mock_database import MockDatabase
 @pytest.fixture(scope="function")
 async def test_client(event_loop):
     app.dependency_overrides[get_db] = lambda: MockDatabase(event_loop)
-    async with AsyncClient(app=app, base_url="http://localhost") as client, LifespanManager(app):
+    async with AsyncClient(
+        app=app, base_url="http://localhost"
+    ) as client, LifespanManager(app):
         yield client
 
 
 @pytest.fixture(scope="function")
 async def test_db(event_loop) -> MockDatabase:
     db = MockDatabase(event_loop)
+    await db.create_index()
     yield db
     await db.client.drop_database("file_service")
 
@@ -50,7 +53,11 @@ def image_file() -> Path:
 @pytest.fixture(scope="session")
 def admin_token_header() -> str:
     payload = JWTPayload(
-        sub="admin_id", role=Role.ADMIN, exp=datetime(2077, 1, 1), username="marko", email="hello@world.com"
+        sub="admin_id",
+        role=Role.ADMIN,
+        exp=datetime(2077, 1, 1),
+        username="marko",
+        email="hello@world.com",
     )
     yield {
         "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
@@ -60,7 +67,11 @@ def admin_token_header() -> str:
 @pytest.fixture(scope="session")
 def uploader_token_header() -> Generator:
     payload = JWTPayload(
-        sub="uploader_id", role=Role.UPLOADER, exp=datetime(2077, 1, 1), username="pollo", email="hola@world.com"
+        sub="uploader_id",
+        role=Role.UPLOADER,
+        exp=datetime(2077, 1, 1),
+        username="pollo",
+        email="hola@world.com",
     )
     yield {
         "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
@@ -70,7 +81,11 @@ def uploader_token_header() -> Generator:
 @pytest.fixture(scope="session")
 def viewer_token_header() -> Generator:
     payload = JWTPayload(
-        sub="viewer_id", role=Role.VIEWER, exp=datetime(2077, 1, 1), username="guy", email="halla@world.com"
+        sub="viewer_id",
+        role=Role.VIEWER,
+        exp=datetime(2077, 1, 1),
+        username="guy",
+        email="halla@world.com",
     )
     yield {
         "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
