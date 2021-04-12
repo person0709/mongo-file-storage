@@ -1,0 +1,31 @@
+services:
+  user-service:
+    build:
+      context: .
+    image: user-service
+    restart: always
+    container_name: fs-user-service
+    environment:
+      SQLALCHEMY_DATABASE_URI: mysql://${USER_SERVICE_DB_USER}:${USER_SERVICE_DB_PASSWORD}@${USER_SERVICE_DB_HOST}/user-db
+      SECRET_KEY: ${JWT_SECRET_KEY}
+    volumes:
+    - ./app:/app/app
+    ports:
+      - "8000:80"
+    depends_on:
+      - user-service-db
+
+  user-service-db:
+    image: mysql:5.7
+    container_name: ${USER_SERVICE_DB_HOST}
+    volumes:
+      - user_db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user-db
+      MYSQL_USER: ${USER_SERVICE_DB_USER}
+      MYSQL_PASSWORD: ${USER_SERVICE_DB_PASSWORD}
+
+volumes:
+  user_db_data: {}
