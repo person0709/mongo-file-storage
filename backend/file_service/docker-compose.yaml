@@ -1,0 +1,28 @@
+services:
+  file-service:
+    build:
+      context: .
+    image: file-service
+    container_name: fs-file-service
+    ports:
+      - "8000:80"
+    environment:
+      MONGODB_URL: mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}:27017
+      SECRET_KEY: ${JWT_SECRET_KEY}
+#      NO_AUTH_MODE: "True"  # uncomment to enable no-auth mode
+    volumes:
+      - ./app:/app/app
+    depends_on:
+      - file-service-db
+
+  file-service-db:
+    image: mongo:4.4
+    container_name: ${MONGO_DB_HOST}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
+    volumes:
+      - file_db_data:/data/db
+
+volumes:
+  file_db_data: {}
