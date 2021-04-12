@@ -11,10 +11,15 @@ super_user = User(
     username=settings.ADMIN_USER_USERNAME,
     email=settings.ADMIN_USER_EMAIL,
     hashed_password=get_hash(settings.ADMIN_USER_PASSWORD),
+    storage_allowance=1_000_000_000,
     role=Role.ADMIN,
 )
 
 db = DBSession()
-db.add(super_user)
-db.commit()
-db.close()
+try:
+    db.add(super_user)
+    db.commit()
+except:
+    pass
+finally:
+    db.close()
