@@ -2,10 +2,9 @@ import os
 from logging.config import fileConfig
 
 from alembic import context
+from app.db.models.user import Base
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
-from app.db.models.user import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -28,7 +27,9 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return os.getenv("SQLALCHEMY_DATABASE_URI", "mysql://fs-user:password@fs-user-db/user")
+    return os.getenv(
+        "SQLALCHEMY_DATABASE_URI", "mysql://fs-user:password@fs-user-db/user"
+    )
 
 
 def run_migrations_offline():

@@ -2,7 +2,8 @@
 Models to represent CRUD operation responses for users.
 Each model will contain only the appropriate info as the specific operation response.
 """
-from typing import Optional
+from datetime import datetime
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
 
@@ -17,22 +18,31 @@ class CreateUserResponse(BaseUserResponse):
     username: str
     email: EmailStr
     role: Role
+    storage_allowance: int
 
 
 class ReadUserResponse(BaseUserResponse):
     username: str
     email: EmailStr
     role: Role
+    storage_allowance: int
+    joined_at: datetime
     user_id: Optional[str]
-    del_flag: Optional[int]
+    is_active: Optional[bool]
+
+
+class ListUsersResponse(BaseUserResponse):
+    users: List[ReadUserResponse] = []
+    count: int
 
 
 class DeleteUserResponse(BaseUserResponse):
-    username: str
-    email: EmailStr
+    user_id: str
 
 
-class UpdateUserRoleResponse(BaseUserResponse):
+class UpdateUserResponse(BaseUserResponse):
     username: str
     email: EmailStr
     role: Role
+    storage_allowance: int
+    is_active: bool

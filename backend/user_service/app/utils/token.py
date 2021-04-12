@@ -4,6 +4,8 @@ A util module for all the token related operations
 from datetime import datetime, timedelta
 from typing import Optional
 
+from api.models.token import Token
+from db.models.user import User
 from fastapi import HTTPException
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -12,9 +14,7 @@ from pydantic import ValidationError
 from starlette import status
 
 from api.models.jwt_payload import JWTPayload
-from api.models.token import Token
 from config import settings
-from db.models.user import User
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
@@ -38,7 +38,9 @@ def generate_jwt(user: User) -> Token:
     )
     return Token(
         token_type="bearer",
-        access_token=jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM),
+        access_token=jwt.encode(
+            payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+        ),
     )
 
 

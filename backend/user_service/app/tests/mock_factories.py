@@ -1,7 +1,7 @@
 import factory
+from db.models.user import User
 
 from api.models.role import Role
-from db.models.user import User
 
 
 class UserFactory(factory.Factory):
@@ -12,5 +12,7 @@ class UserFactory(factory.Factory):
     username = factory.Faker("user_name")
     email = factory.Faker("email")
     hashed_password = factory.Faker("password")
-    role = Role.VIEWER
-    del_flag = 0
+    joined_at = factory.Faker("date_time_this_decade")
+    role = factory.Faker(
+        "random_element", elements=(Role.VIEWER, Role.UPLOADER, Role.ADMIN)
+    )

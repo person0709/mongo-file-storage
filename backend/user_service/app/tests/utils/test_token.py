@@ -1,10 +1,11 @@
 import pytest
+from db.models.user import User
+from fastapi import HTTPException
 from jose import jwt, ExpiredSignatureError
+from tests.mock_factories import UserFactory
 
 from config import settings
-from db.models.user import User
-from tests.mock_factories import UserFactory
-from utils.token import generate_jwt
+from utils.token import generate_jwt, auth_with_jwt
 
 
 def test_generate_jwt_claims():
@@ -28,3 +29,14 @@ def test_generate_jwt_expire():
     token = generate_jwt(mock_user)
     with pytest.raises(ExpiredSignatureError):
         jwt.decode(token.access_token, key="secret", algorithms="HS256")
+
+
+def test_auth_with_jwt():
+    settings.SECRET_KEY = "secret"
+    settings.JWT_ALGORITHM = "HS256"
+    # set negative expire minute to set expire date to past
+    settings.TOKEN_EXPIRE_MINUTES = -1
+    mock_user: User = UserFactory()
+    token = generate_jwt(mock_user)
+    with pytest.raises(HTTPException):
+        auth_with_jwt(token.access_token)

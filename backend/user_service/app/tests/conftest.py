@@ -1,16 +1,19 @@
+from datetime import datetime
 from pathlib import Path
 from typing import Generator
 
 import pytest
+from jose import jwt
+
+from api.models.jwt_payload import JWTPayload
+from config import settings
+from db.models.base import Base
 from starlette.testclient import TestClient
+from tests.db.test_database import override_get_db, TestSession, engine
 
 from api.models.role import Role
 from db.database import get_db
-from db.models.base import Base
 from main import app
-from tests.db.test_database import override_get_db, TestSession, engine
-from tests.mock_factories import UserFactory
-from utils.token import generate_jwt
 
 
 @pytest.fixture(scope="function")
@@ -35,12 +38,28 @@ def test_client() -> Generator:
 
 
 @pytest.fixture(scope="session")
-def admin_token_header() -> Generator:
-    admin = UserFactory(role=Role.ADMIN)
-    yield {"Authorization": f"Bearer {generate_jwt(admin).access_token}"}
+def admin_token_header() -> str:
+    payload = JWTPayload(
+        sub="admin_id",
+        role=Role.ADMIN,
+        exp=datetime(2077, 1, 1),
+        username="marko",
+        email="hello@world.com",
+    )
+    yield {
+        "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
+    }
 
 
 @pytest.fixture(scope="session")
 def non_admin_token_header() -> Generator:
-    user = UserFactory(role=Role.VIEWER)
-    yield {"Authorization": f"Bearer {generate_jwt(user).access_token}"}
+    payload = JWTPayload(
+        sub="uploader_id",
+        role=Role.UPLOADER,
+        exp=datetime(2077, 1, 1),
+        username="pollo",
+        email="hola@world.com",
+    )
+    yield {
+        "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
+    }

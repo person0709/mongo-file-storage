@@ -9,6 +9,7 @@ class JWTPayload(BaseModel):
     """
     A model to represent the JWT claims used in the API
     """
+
     sub: str  # subject's user_id
     exp: datetime  # JWT expiration date
     role: Role  # subject's permission level
