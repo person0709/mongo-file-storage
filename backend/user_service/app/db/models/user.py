@@ -7,11 +7,15 @@ from sqlalchemy import Column, String, Integer, Boolean, DateTime
 from api.models.role import Role
 
 
+def generate_uuid():
+    return str(uuid.uuid4())
+
+
 class User(Base):
     __tablename__ = "user"
 
     user_id = Column(
-        String(36), primary_key=True, unique=True, index=True, default=str(uuid.uuid4())
+        String(36), primary_key=True, unique=True, index=True, default=generate_uuid
     )
     username = Column(String(32), unique=True, index=True, nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
