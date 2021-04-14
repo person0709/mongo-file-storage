@@ -1,6 +1,6 @@
 from typing import Optional, List, Tuple
 
-import sqlalchemy
+import sqlalchemy.exc
 from db.models.user import User
 from db.repositories.base_repository import BaseRepository
 from utils.password import get_hash

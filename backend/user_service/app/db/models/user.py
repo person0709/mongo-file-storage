@@ -22,6 +22,6 @@ class User(Base):
     # storage allowance for the user in bytes(B)
     storage_allowance = Column(Integer, default=100_000_000, nullable=False)
     hashed_password = Column(String(255), nullable=False)
-    role = Column(String(32), default=Role.VIEWER.name, nullable=False)
-    joined_at = Column(DateTime, default=datetime.now(), index=True, nullable=False)
+    role = Column(String(32), default=Role.UPLOADER.name, nullable=False)
+    joined_at = Column(DateTime, default=datetime.utcnow, index=True, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
