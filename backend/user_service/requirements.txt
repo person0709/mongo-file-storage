@@ -9,3 +9,4 @@ alembic
 # for testing
 factory-boy
 pytest
+pytest-cov
