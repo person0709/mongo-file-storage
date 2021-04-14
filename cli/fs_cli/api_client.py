@@ -16,6 +16,7 @@ def request_wrapper(func):
     """
     Wrapper for the requests. Handles the response depending on the response code
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         response: Response = func(*args, **kwargs)
@@ -26,6 +27,7 @@ def request_wrapper(func):
             if isinstance(detail, list):
                 raise HTTPError(detail[0].get("msg"))
             raise HTTPError(detail)
+
     return wrapper
 
 
@@ -53,11 +55,7 @@ class ApiClient:
         Returns:
             created user info in dict (parsed by request wrapper)
         """
-        body = {
-            "email": email,
-            "username": username,
-            "password": password
-        }
+        body = {"email": email, "username": username, "password": password}
         return self.session.post(url=self.base_url + "/users", json=body)
 
     @request_wrapper
@@ -72,7 +70,10 @@ class ApiClient:
             JWT token in a dict if authentication successful
             eg. {token_type: Bearer, access_token: <jwt_token>}
         """
-        return self.session.post(url=self.base_url + "/auth/token", data={"username": email, "password": password})
+        return self.session.post(
+            url=self.base_url + "/auth/token",
+            data={"username": email, "password": password},
+        )
 
     @request_wrapper
     def get_my_info(self, headers: dict) -> Optional[Dict]:
@@ -99,7 +100,11 @@ class ApiClient:
         Returns:
             a list of file meta in a dict (parsed by request wrapper)
         """
-        return self.session.get(url=self.base_url + "/files/list/", params={"limit": limit, "sort_by": sort_by, "desc": desc}, headers=headers)
+        return self.session.get(
+            url=self.base_url + "/files/list/",
+            params={"limit": limit, "sort_by": sort_by, "desc": desc},
+            headers=headers,
+        )
 
     @request_wrapper
     def get_storage_used(self, headers: dict) -> Optional[Dict]:
@@ -147,8 +152,18 @@ class ApiClient:
         response = self.session.get(url=self.base_url + "/files", params={"filename": filename}, headers=headers)
         if response.status_code == 404:
             raise HTTPError("File does not exist!")
-        with self.session.get(url=self.base_url + "/files/download", params={"filename": filename}, headers=headers, stream=True) as r:
-            with tqdm(total=int(r.headers.get("content-length")), unit_scale=True, unit="B", dynamic_ncols=True) as bar:
+        with self.session.get(
+            url=self.base_url + "/files/download",
+            params={"filename": filename},
+            headers=headers,
+            stream=True,
+        ) as r:
+            with tqdm(
+                total=int(r.headers.get("content-length")),
+                unit_scale=True,
+                unit="B",
+                dynamic_ncols=True,
+            ) as bar:
                 with download_path.open("wb") as f:
                     for chunk in r.iter_content(1000):
                         f.write(chunk)

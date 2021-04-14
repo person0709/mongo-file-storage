@@ -13,6 +13,7 @@ class Environment:
     """
     Contains context that is shared among different commands
     """
+
     def __init__(self):
         self.api_base_url: str = "http://fs-service.localhost"
         self.token_file: Path = Path("/home") / pwd.getpwuid(os.getuid()).pw_name / ".files"
@@ -121,8 +122,14 @@ def file():
 
 @file.command()
 @click.option("-l", "--limit", default=10, type=int, help="Max number of file meta to get")
-@click.option("-s", "--sort-by", default="uploaded_at", type=click.Choice(["uploaded_at", "filename", "size"], case_sensitive=False))
-@click.option("--desc/--asc", default=True)
+@click.option(
+    "-s",
+    "--sort-by",
+    default="uploaded_at",
+    type=click.Choice(["uploaded_at", "filename", "size"], case_sensitive=False),
+    help="Field to sort the list by",
+)
+@click.option("--desc/--asc", default=True, help="Direction of the sort")
 @pass_environment
 def list(ctx: Environment, limit: int, sort_by: str, desc: bool):
     """
@@ -145,9 +152,19 @@ def upload(ctx: Environment, file: str):
     Uploads a file to the storage
     """
     client = ApiClient()
-    with tqdm(total=Path(file).stat().st_size, unit_scale=True, unit="B", dynamic_ncols=True, delay=1) as bar:
+    with tqdm(
+        total=Path(file).stat().st_size,
+        unit_scale=True,
+        unit="B",
+        dynamic_ncols=True,
+        delay=1,
+    ) as bar:
         try:
-            res = client.upload_file(Path(file), ctx.get_headers(), lambda x: bar.update(x.bytes_read - bar.n))
+            res = client.upload_file(
+                Path(file),
+                ctx.get_headers(),
+                lambda x: bar.update(x.bytes_read - bar.n),
+            )
             click.echo(f"File {res['filename']} uploaded successfully")
         except HTTPError as e:
             click.echo(f"ERROR! {e}")
@@ -170,7 +187,12 @@ def delete(ctx: Environment, filename: str):
 
 @file.command()
 @click.argument("filename", type=str)
-@click.option("-d", "--dest", type=click.Path(exists=False, dir_okay=True, file_okay=True, writable=True))
+@click.option(
+    "-d",
+    "--dest",
+    type=click.Path(exists=False, dir_okay=True, file_okay=True, writable=True),
+    help="Destination path for the download",
+)
 @pass_environment
 def download(ctx: Environment, filename: str, dest: str):
     """

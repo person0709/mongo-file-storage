@@ -1,0 +1,8 @@
+Click
+requests
+requests-toolbelt
+tqdm
+
+# requirements for testing
+pytest
+faker
