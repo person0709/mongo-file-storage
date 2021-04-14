@@ -6,6 +6,7 @@ from typing import Optional, IO
 
 from fastapi import APIRouter, UploadFile, File, Depends, Response, HTTPException, Form
 from fastapi.params import Header
+from fastapi.logger import logger
 from filetype import filetype
 from starlette import status
 
@@ -100,8 +101,10 @@ async def upload_file(
 
     try:
         upload_file_meta = await FileRepository(db).add_file(storage_user_id, file)
+        logger.info(f"File uploaded in [{storage_user_id}] by [{current_user_jwt.sub}]: {file.filename}")
         return UploadFileResponse(**upload_file_meta.dict())
     except Exception as e:
+        logger.error(f"File upload failed [{storage_user_id}]: {e}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
@@ -131,6 +134,7 @@ async def download_file(
         file_in_bin: bytes = await FileRepository(db).download_file(
             storage_user_id=request.user_id, filename=request.filename
         )
+        logger.info(f"Download initiated from [{request.user_id}] by [{current_user_jwt.sub}]: {request.filename}")
         return Response(
             content=file_in_bin, media_type=filetype.guess_mime(file_in_bin)
         )
@@ -332,4 +336,5 @@ async def delete_file(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
         )
+    logger.info(f"File deleted from [{request.user_id}] by [{current_user_jwt.sub}]: {request.filename}")
     return DeleteFileResponse(filename=request.filename)

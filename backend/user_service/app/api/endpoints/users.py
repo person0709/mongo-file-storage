@@ -25,6 +25,8 @@ from api.models.role import Role
 from db.database import get_db
 from utils.token import auth_with_jwt
 
+from fastapi.logger import logger
+
 user_router = APIRouter()
 
 
@@ -97,6 +99,7 @@ def create_user(
         )
 
     added_user = repo.add_user(**request.dict())
+    logger.info(f"Created user {added_user.user_id}, {added_user.email}, {added_user.username}")
     return CreateUserResponse(**added_user.__dict__)
 
 
@@ -130,7 +133,11 @@ def update_user(
                 detail="Admin cannot demote themselves",
             )
 
-        updated_user = UserRepository(db).update_user(**request.dict())
+        logger.info(
+            f"Updating user {target_user.user_id}, {target_user.email}, {target_user.username}: "
+            f"{target_user.role} {target_user.storage_allowance} {target_user.is_active} => "
+            f"{request.role} {request.storage_allowance} {request.is_active}")
+        updated_user = repo.update_user(**request.dict())
         return UpdateUserResponse(**updated_user.__dict__)
     else:
         raise HTTPException(

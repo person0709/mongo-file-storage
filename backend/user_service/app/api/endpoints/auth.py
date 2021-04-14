@@ -5,6 +5,7 @@ from api.models.token import Token
 from db.repositories.user_repository import UserRepository
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.logger import logger
 from sqlalchemy.orm import Session
 from starlette import status
 from utils.password import verify_hash
@@ -31,6 +32,7 @@ def get_token(
         and user.is_active == 1
         and verify_hash(form_data.password, user.hashed_password)
     ):
+        logger.info(f"Login by user: {form_data.username}")
         return token.generate_jwt(user)
     else:
         raise HTTPException(
