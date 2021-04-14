@@ -20,7 +20,7 @@
           <v-icon large>mdi-database</v-icon>
         </v-list-item-avatar>
         <v-list-item-title class="title" v-show="!mini">
-          File Storage
+          File Store
         </v-list-item-title>
         <v-btn icon @click.stop="mini = !mini">
           <v-icon>mdi-chevron-left</v-icon>

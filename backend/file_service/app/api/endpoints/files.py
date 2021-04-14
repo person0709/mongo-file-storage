@@ -1,5 +1,5 @@
 """
-API endpoint for file storage
+API endpoint for file store
 """
 from tempfile import NamedTemporaryFile
 from typing import Optional, IO

@@ -1,8 +1,8 @@
-# CLI for File Storage
+# CLI for File Store
 _____
 ## Introduction
-This is a command line interface(CLI) for File Storage.  
-You can use this tool to interact with File Storage API with ease.
+This is a command line interface(CLI) for File Store.  
+You can use this tool to interact with File Store API with ease.
 
 ## Requirements
 * Python >= 3.7

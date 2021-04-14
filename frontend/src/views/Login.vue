@@ -4,7 +4,7 @@
       <v-col xs="12" sm="8" md="4">
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
-            <v-toolbar-title>File Storage</v-toolbar-title>
+            <v-toolbar-title>File Store</v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>

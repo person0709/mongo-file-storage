@@ -20,7 +20,7 @@ describe("Login.vue", () => {
       stubs: ["router-link", "router-view"],
     });
 
-    expect(wrapper.find(".v-toolbar__title").text()).toMatch("File Storage");
+    expect(wrapper.find(".v-toolbar__title").text()).toMatch("File Store");
   });
 
   it("should have a form", function () {

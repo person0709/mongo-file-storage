@@ -1,4 +1,4 @@
-# User Service for File Storage
+# User Service for File Store
 ____
 ## Introduction
 This server is one of the microservices for File Storage.  
