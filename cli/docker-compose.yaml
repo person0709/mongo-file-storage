@@ -18,7 +18,7 @@ services:
 
   user-service:
     build:
-      context: ./backend/user_service
+      context: ../backend/user_service
     image: user-service
     container_name: fs-user-service
     environment:
@@ -28,8 +28,8 @@ services:
       - "8000:80"
 #    command: /start-reload.sh  # uncomment to enable auto restart
     volumes:
-      - ./backend/user_service/app:/app/app
-      - ./backend/user_service/alembic:/app/alembic
+      - ../backend/user_service/app:/app/app
+      - ../backend/user_service/alembic:/app/alembic
     depends_on:
       - user-service-db
     labels:
@@ -40,25 +40,25 @@ services:
   user-service-db:
     image: mysql:5.7
     container_name: ${USER_SERVICE_DB_HOST}
-    volumes:
-      - user_db_data:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user-db
       MYSQL_USER: ${USER_SERVICE_DB_USER}
       MYSQL_PASSWORD: ${USER_SERVICE_DB_PASSWORD}
+    volumes:
+      - user_db_data:/var/lib/mysql
 
   file-service:
     build:
-      context: ./backend/file_service
+      context: ../backend/file_service
     image: file-service
     container_name: fs-file-service
     ports:
       - "8001:80"
 #    command: /start-reload.sh  # uncomment to enable auto restart
     volumes:
-      - ./backend/file_service/app:/app/app
+      - ../backend/file_service/app:/app/app
     environment:
       MONGODB_URL: mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}:27017
       SECRET_KEY: ${JWT_SECRET_KEY}
@@ -77,16 +77,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
     volumes:
       - file_db_data:/data/db
-
-  frontend:
-    build:
-      context: ./frontend
-    image: fs-frontend
-    container_name: fs-frontend
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.file-storage-frontend-http.rule=PathPrefix(`/`)"
-      - "traefik.http.services.file-storage-frontend.loadbalancer.server.port=80"
 
 volumes:
   user_db_data: {}
