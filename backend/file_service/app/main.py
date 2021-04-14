@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from fastapi import FastAPI
@@ -27,6 +28,14 @@ app.add_middleware(
 app.add_event_handler("startup", open_db_connection)
 app.add_event_handler("shutdown", close_db_connection)
 app.include_router(api_router, prefix="/api")
+
+
+@app.on_event("startup")
+async def logger_setup():
+    logging.basicConfig(format="%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s", level=logging.INFO)
+    uvi_logger = logging.getLogger("uvicorn.access")
+    uvi_logger.handlers[0].setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+
 
 # This will allow all endpoints to be called without Authorization headers. Use this only for testing.
 if settings.NO_AUTH_MODE:
