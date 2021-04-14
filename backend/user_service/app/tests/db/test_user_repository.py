@@ -16,7 +16,7 @@ def test_add_user(test_db: Session):
         username=mock_user.username, email=mock_user.email, password="password"
     )
     assert user_added.email == mock_user.email
-    assert user_added.role == Role.VIEWER
+    assert user_added.role == Role.UPLOADER
     user_in_db = test_db.query(User).filter(User.email == mock_user.email).first()
     assert user_in_db
 
@@ -31,7 +31,7 @@ def test_add_user_conflict(test_db: Session):
         username=mock_user.username, email=mock_user.email, password="password"
     )
     assert user_added.email == mock_user.email
-    assert user_added.role == Role.VIEWER
+    assert user_added.role == Role.UPLOADER
     # try adding the same user
     user_added = repo.add_user(
         username=mock_user.username, email=mock_user.email, password="password"

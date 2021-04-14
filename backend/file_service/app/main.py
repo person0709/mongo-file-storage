@@ -34,7 +34,8 @@ app.include_router(api_router, prefix="/api")
 async def logger_setup():
     logging.basicConfig(format="%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s", level=logging.INFO)
     uvi_logger = logging.getLogger("uvicorn.access")
-    uvi_logger.handlers[0].setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+    if uvi_logger.handlers[0]:
+        uvi_logger.handlers[0].setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 
 
 # This will allow all endpoints to be called without Authorization headers. Use this only for testing.
