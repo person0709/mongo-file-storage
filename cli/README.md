@@ -35,7 +35,6 @@ $ fs --help
 The test aims to do full E2E testing.  
 Make sure the docker-compose local environment is up.
 ```bash
-# from the project root
 $ docker-compose up -d
 ```
 Install requirements
