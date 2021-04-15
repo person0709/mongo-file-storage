@@ -9,7 +9,7 @@ from utils.token import generate_jwt, auth_with_jwt
 
 
 def test_generate_jwt_claims():
-    settings.SECRET_KEY = "secret"
+    settings.JWT_SECRET_KEY = "secret"
     settings.JWT_ALGORITHM = "HS256"
     mock_user: User = UserFactory()
     token = generate_jwt(mock_user)
@@ -21,7 +21,7 @@ def test_generate_jwt_claims():
 
 
 def test_generate_jwt_expire():
-    settings.SECRET_KEY = "secret"
+    settings.JWT_SECRET_KEY = "secret"
     settings.JWT_ALGORITHM = "HS256"
     # set negative expire minute to set expire date to past
     settings.TOKEN_EXPIRE_MINUTES = -1
@@ -32,7 +32,7 @@ def test_generate_jwt_expire():
 
 
 def test_auth_with_jwt():
-    settings.SECRET_KEY = "secret"
+    settings.JWT_SECRET_KEY = "secret"
     settings.JWT_ALGORITHM = "HS256"
     # set negative expire minute to set expire date to past
     settings.TOKEN_EXPIRE_MINUTES = -1

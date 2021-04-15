@@ -32,7 +32,7 @@ async def test_upload_fail_auth(
         "/api/files/upload",
         files=files,
         headers={
-            "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
+            "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
         },
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN

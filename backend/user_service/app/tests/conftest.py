@@ -47,7 +47,7 @@ def admin_token_header() -> str:
         email="hello@world.com",
     )
     yield {
-        "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
+        "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
     }
 
 
@@ -61,5 +61,5 @@ def non_admin_token_header() -> Generator:
         email="hola@world.com",
     )
     yield {
-        "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
+        "Authorization": f"Bearer {jwt.encode(payload.dict(), key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)}"
     }

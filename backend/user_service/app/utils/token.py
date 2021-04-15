@@ -39,14 +39,14 @@ def generate_jwt(user: User) -> Token:
     return Token(
         token_type="bearer",
         access_token=jwt.encode(
-            payload.dict(), key=settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+            payload.dict(), key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
         ),
     )
 
 
 def auth_with_jwt(token: str = Depends(reusable_oauth2)) -> Optional[JWTPayload]:
     try:
-        decoded_jwt = jwt.decode(token, settings.SECRET_KEY, settings.JWT_ALGORITHM)
+        decoded_jwt = jwt.decode(token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
     except (jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

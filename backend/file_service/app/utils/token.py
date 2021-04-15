@@ -22,7 +22,7 @@ def auth_with_jwt(token: str = Depends(reusable_oauth2)) -> Optional[JWTPayload]
         Decoded JWT with all the claims
     """
     try:
-        decoded_jwt = jwt.decode(token, settings.SECRET_KEY, settings.JWT_ALGORITHM)
+        decoded_jwt = jwt.decode(token, settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
     except (jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

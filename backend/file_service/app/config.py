@@ -7,7 +7,7 @@ from api.models.role import Role
 
 
 class Settings(BaseSettings):
-    SECRET_KEY: str = secrets.token_urlsafe(64)
+    JWT_SECRET_KEY: str = secrets.token_urlsafe(64)
     JWT_ALGORITHM: str = "HS256"
     MONGODB_URL: str = "mongodb://localhost:27017"
 

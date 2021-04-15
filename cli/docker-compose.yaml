@@ -23,7 +23,8 @@ services:
     container_name: fs-user-service
     environment:
       SQLALCHEMY_DATABASE_URI: mysql://${USER_SERVICE_DB_USER}:${USER_SERVICE_DB_PASSWORD}@${USER_SERVICE_DB_HOST}/user-db
-      SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
     ports:
       - "8000:80"
 #    command: /start-reload.sh  # uncomment to enable auto restart
@@ -61,7 +62,8 @@ services:
       - ../backend/file_service/app:/app/app
     environment:
       MONGODB_URL: mongodb://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}:27017
-      SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
     depends_on:
       - file-service-db
     labels:
