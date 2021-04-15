@@ -95,12 +95,7 @@ class UserRepository(BaseRepository):
         filter_query = self.db.query(User).filter(*filter_list)
         count = filter_query.count()
         return (
-            self.db.query(User)
-            .filter(*filter_list)
-            .order_by(order_by_query)
-            .offset(offset)
-            .limit(limit)
-            .all(),
+            self.db.query(User).filter(*filter_list).order_by(order_by_query).offset(offset).limit(limit).all(),
             count,
         )
 
@@ -157,9 +152,7 @@ class UserRepository(BaseRepository):
         Returns:
             Updated user model, or None if not found
         """
-        user_to_update: User = (
-            self.db.query(User).filter(User.user_id == user_id).first()
-        )
+        user_to_update: User = self.db.query(User).filter(User.user_id == user_id).first()
         if not user_to_update:
             return None
         if role:

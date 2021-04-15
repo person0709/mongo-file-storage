@@ -17,9 +17,7 @@ auth_router = APIRouter()
 
 
 @auth_router.post("/token", response_model=Token)
-def get_token(
-    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
-):
+def get_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Check given credentials against DB and issue a JWT if they match.<br>
     - **username**: email of the user
@@ -27,11 +25,7 @@ def get_token(
     """
     repo = UserRepository(db)
     user = repo.get_user_by_email(email=form_data.username)
-    if (
-        user
-        and user.is_active == 1
-        and verify_hash(form_data.password, user.hashed_password)
-    ):
+    if user and user.is_active == 1 and verify_hash(form_data.password, user.hashed_password):
         logger.info(f"Login by user: {form_data.username}")
         return token.generate_jwt(user)
     else:

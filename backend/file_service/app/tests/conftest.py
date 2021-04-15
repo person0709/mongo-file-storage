@@ -18,9 +18,7 @@ from tests.db.mock_database import MockDatabase
 @pytest.fixture(scope="function")
 async def test_client(event_loop):
     app.dependency_overrides[get_db] = lambda: MockDatabase(event_loop)
-    async with AsyncClient(
-        app=app, base_url="http://localhost"
-    ) as client, LifespanManager(app):
+    async with AsyncClient(app=app, base_url="http://localhost") as client, LifespanManager(app):
         yield client
 
 

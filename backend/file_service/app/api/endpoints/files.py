@@ -62,9 +62,7 @@ async def upload_file(
     """
     # Check header to see if file is bigger than the limit
     if content_length > settings.FILE_SIZE_LIMIT:
-        raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="File too big"
-        )
+        raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="File too big")
     # Check if the size of the file is really what the header says, in case the header's been spoofed
     # Solution offered by the FastAPI creator; https://github.com/tiangolo/fastapi/issues/362
     real_file_size = 0
@@ -135,13 +133,9 @@ async def download_file(
             storage_user_id=request.user_id, filename=request.filename
         )
         logger.info(f"Download initiated from [{request.user_id}] by [{current_user_jwt.sub}]: {request.filename}")
-        return Response(
-            content=file_in_bin, media_type=filetype.guess_mime(file_in_bin)
-        )
+        return Response(content=file_in_bin, media_type=filetype.guess_mime(file_in_bin))
     except FileNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
 
 @files_router.get("", response_model=ReadFileInfoResponse)
@@ -171,9 +165,7 @@ async def get_file_meta(
         )
         return ReadFileInfoResponse(**meta_data.dict())
     except FileNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
 
 @files_router.get("/list/", response_model=ListFileInfoResponse)
@@ -330,11 +322,7 @@ async def delete_file(
     else:
         request.user_id = current_user_jwt.sub
 
-    if not await FileRepository(db).delete_file(
-        storage_user_id=request.user_id, filename=request.filename
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="File not found"
-        )
+    if not await FileRepository(db).delete_file(storage_user_id=request.user_id, filename=request.filename):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
     logger.info(f"File deleted from [{request.user_id}] by [{current_user_jwt.sub}]: {request.filename}")
     return DeleteFileResponse(filename=request.filename)

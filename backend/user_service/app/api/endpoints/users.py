@@ -30,9 +30,7 @@ from fastapi.logger import logger
 user_router = APIRouter()
 
 
-@user_router.get(
-    "/my", response_model=ReadUserResponse, response_model_exclude_unset=True
-)
+@user_router.get("/my", response_model=ReadUserResponse, response_model_exclude_unset=True)
 def get_users(
     current_user_jwt: JWTPayload = Depends(auth_with_jwt),
     db: Session = Depends(get_db),
@@ -77,9 +75,7 @@ def get_users(
 
 
 @user_router.post("", response_model=CreateUserResponse)
-def create_user(
-    request: CreateUserRequest, db: Session = Depends(get_db)
-) -> CreateUserResponse:
+def create_user(request: CreateUserRequest, db: Session = Depends(get_db)) -> CreateUserResponse:
     """
     Create a user with the provided credentials.<br>
     Email and username must be unique.<br>
@@ -89,14 +85,10 @@ def create_user(
     """
     repo = UserRepository(db)
     if repo.get_user_by_email(request.email):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already in use."
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already in use.")
 
     if repo.get_user_by_username(request.username):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Username already in use."
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already in use.")
 
     added_user = repo.add_user(**request.dict())
     logger.info(f"Created user {added_user.user_id}, {added_user.email}, {added_user.username}")
@@ -123,9 +115,7 @@ def update_user(
         target_user = repo.get_user_by_user_id(request.user_id)
         # return 404 if target user is not found
         if not target_user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         # prevent admin demoting themselves
         elif request.user_id == jwt_data.sub and request.role != Role.ADMIN:
             raise HTTPException(
@@ -136,7 +126,8 @@ def update_user(
         logger.info(
             f"Updating user {target_user.user_id}, {target_user.email}, {target_user.username}: "
             f"{target_user.role} {target_user.storage_allowance} {target_user.is_active} => "
-            f"{request.role} {request.storage_allowance} {request.is_active}")
+            f"{request.role} {request.storage_allowance} {request.is_active}"
+        )
         updated_user = repo.update_user(**request.dict())
         return UpdateUserResponse(**updated_user.__dict__)
     else:
@@ -160,14 +151,10 @@ def delete_user(
     # user must be an admin
     if jwt_data.role == Role.ADMIN:
         if jwt_data.sub == request.user_id:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot delete self"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot delete self")
         is_deleted = UserRepository(db).delete_user(request.user_id)
         if not is_deleted:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         return DeleteUserResponse(user_id=request.user_id)
     else:
         raise HTTPException(

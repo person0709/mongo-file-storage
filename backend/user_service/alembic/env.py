@@ -27,9 +27,7 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return os.getenv(
-        "SQLALCHEMY_DATABASE_URI", "mysql://fs-user:password@fs-user-db/user"
-    )
+    return os.getenv("SQLALCHEMY_DATABASE_URI", "mysql://fs-user:password@fs-user-db/user")
 
 
 def run_migrations_offline():

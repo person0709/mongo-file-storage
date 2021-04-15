@@ -24,7 +24,9 @@ app.include_router(api_router, prefix="/api")
 
 @app.on_event("startup")
 async def logger_setup():
-    logging.basicConfig(format="%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s", level=logging.INFO)
+    logging.basicConfig(
+        format="%(asctime)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s", level=logging.INFO
+    )
     uvi_logger = logging.getLogger("uvicorn.access")
     if len(uvi_logger.handlers):
         uvi_logger.handlers[0].setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))

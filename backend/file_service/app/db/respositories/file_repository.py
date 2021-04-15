@@ -10,9 +10,7 @@ from db.respositories.base_repository import BaseRepository
 
 
 class FileRepository(BaseRepository):
-    async def add_file(
-        self, storage_user_id: str, file: UploadFile
-    ) -> Optional[FileMeta]:
+    async def add_file(self, storage_user_id: str, file: UploadFile) -> Optional[FileMeta]:
         """
         Add file to database and tag it with the given user id to mark its ownership
         Args:
@@ -32,14 +30,10 @@ class FileRepository(BaseRepository):
             source=await file.read(),
             metadata={"user_id": storage_user_id},
         )
-        uploaded_file = await self.db.client["file_service"]["fs.files"].find_one(
-            {"_id": file_id}
-        )
+        uploaded_file = await self.db.client["file_service"]["fs.files"].find_one({"_id": file_id})
         return FileMeta.from_odm(uploaded_file)
 
-    async def download_file(
-        self, storage_user_id: str, filename: str
-    ) -> Optional[bytes]:
+    async def download_file(self, storage_user_id: str, filename: str) -> Optional[bytes]:
         """
         Download file with the given filename and user id.
         Args:
@@ -53,16 +47,12 @@ class FileRepository(BaseRepository):
             {"filename": filename, "metadata": {"user_id": storage_user_id}}
         )
         if doc:
-            result: AsyncIOMotorGridOut = (
-                await self.db.grid_client.open_download_stream(doc["_id"])
-            )
+            result: AsyncIOMotorGridOut = await self.db.grid_client.open_download_stream(doc["_id"])
             return await result.read()
         else:
             raise FileNotFoundError("File not found")
 
-    async def read_file_info(
-        self, storage_user_id: str, filename: str
-    ) -> Optional[FileMeta]:
+    async def read_file_info(self, storage_user_id: str, filename: str) -> Optional[FileMeta]:
         """
         Get metadata of a file with the given filename and the owner's user id
         Args:
@@ -120,9 +110,7 @@ class FileRepository(BaseRepository):
         async for doc in cursor:
             yield FileMeta.from_odm(doc)
 
-    async def search_files_by_regex(
-        self, storage_user_id: str, pattern: str, limit: int = 10
-    ):
+    async def search_files_by_regex(self, storage_user_id: str, pattern: str, limit: int = 10):
         """
         Search the list of stored files' metadata by regex.
         Args:
@@ -156,9 +144,7 @@ class FileRepository(BaseRepository):
             Awaitable total number of files stored in DB
         """
         return await (
-            self.db.client["file_service"]["fs.files"].count_documents(
-                {"metadata": {"user_id": storage_user_id}}
-            )
+            self.db.client["file_service"]["fs.files"].count_documents({"metadata": {"user_id": storage_user_id}})
         )
 
     async def get_storage_usage(self, storage_user_id: str) -> int:

@@ -16,9 +16,7 @@ from tests.db.mock_database import MockDatabase
 
 
 @pytest.mark.asyncio
-async def test_upload_fail_auth(
-    test_client: AsyncClient, test_db: MockDatabase, text_file: Path
-):
+async def test_upload_fail_auth(test_client: AsyncClient, test_db: MockDatabase, text_file: Path):
     payload = JWTPayload(
         # generate jwt with an expired date
         sub="uploader_id",
@@ -52,9 +50,7 @@ async def test_upload_as_admin(
         headers=admin_token_header,
     )
     # check there is an entry with the uploaded filename
-    assert await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": response.json()["filename"]}
-    )
+    assert await test_db.client["file_service"]["fs.files"].find_one({"filename": response.json()["filename"]})
 
 
 @pytest.mark.asyncio
@@ -71,9 +67,7 @@ async def test_upload_image_as_admin(
         headers=admin_token_header,
     )
     # check there is an entry with the uploaded filename
-    assert await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": response.json()["filename"]}
-    )
+    assert await test_db.client["file_service"]["fs.files"].find_one({"filename": response.json()["filename"]})
 
 
 @pytest.mark.asyncio
@@ -129,9 +123,7 @@ async def test_upload_duplicate_filename(
         headers=admin_token_header,
     )
     # check there is an entry with the uploaded filename
-    assert await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": response.json()["filename"]}
-    )
+    assert await test_db.client["file_service"]["fs.files"].find_one({"filename": response.json()["filename"]})
     # upload the same file again
     files = {"file": text_file.open(mode="rb")}
     response = await test_client.post(
@@ -174,9 +166,7 @@ async def test_upload_as_uploader(
         headers=uploader_token_header,
     )
     # check there is an entry with the uploaded filename
-    assert await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": response.json()["filename"]}
-    )
+    assert await test_db.client["file_service"]["fs.files"].find_one({"filename": response.json()["filename"]})
 
 
 @pytest.mark.asyncio
@@ -221,9 +211,7 @@ async def test_download_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "admin_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "admin_id"})
     response = await test_client.get(
         "/api/files/download",
         params={"filename": "text.txt"},
@@ -243,9 +231,7 @@ async def test_download_from_others_storage_as_admin(
 ):
     # upload a file to some other user's storage
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "some_id"})
     response = await test_client.get(
         "/api/files/download",
         params={"filename": "text.txt", "user_id": "some_id"},
@@ -264,9 +250,7 @@ async def test_download_as_uploader(
     uploader_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "uploader_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "uploader_id"})
     response = await test_client.get(
         "/api/files/download",
         params={"filename": "text.txt"},
@@ -286,9 +270,7 @@ async def test_download_from_others_storage_as_uploader(
 ):
     # upload a file to some other user's storage
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "some_id"})
     response = await test_client.get(
         "/api/files/download",
         params={"filename": "text.txt", "user_id": "some_id"},
@@ -336,12 +318,8 @@ async def test_read_file_info_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "admin_id"}
-        )
-    response = await test_client.get(
-        "/api/files", params={"filename": "text.txt"}, headers=admin_token_header
-    )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "admin_id"})
+    response = await test_client.get("/api/files", params={"filename": "text.txt"}, headers=admin_token_header)
     assert "filename" in response.json()
     assert "uploaded_at" in response.json()
     assert "size" in response.json()
@@ -357,9 +335,7 @@ async def test_read_file_info_from_others_storage_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "some_id"})
     response = await test_client.get(
         "/api/files",
         params={"filename": "text.txt", "user_id": "some_id"},
@@ -380,12 +356,8 @@ async def test_read_file_info_as_uploader(
     uploader_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "uploader_id"}
-        )
-    response = await test_client.get(
-        "/api/files", params={"filename": "text.txt"}, headers=uploader_token_header
-    )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "uploader_id"})
+    response = await test_client.get("/api/files", params={"filename": "text.txt"}, headers=uploader_token_header)
     assert "filename" in response.json()
     assert "uploaded_at" in response.json()
     assert "size" in response.json()
@@ -401,9 +373,7 @@ async def test_read_file_info_from_others_storage_as_uploader(
     uploader_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "some_id"})
     response = await test_client.get(
         "/api/files",
         params={"filename": "text.txt", "user_id": "some_id"},
@@ -420,12 +390,8 @@ async def test_read_file_info_as_viewer(
     viewer_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "viewer_id"}
-        )
-    response = await test_client.get(
-        "/api/files", params={"filename": "text.txt"}, headers=viewer_token_header
-    )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "viewer_id"})
+    response = await test_client.get("/api/files", params={"filename": "text.txt"}, headers=viewer_token_header)
     assert "filename" in response.json()
     assert "uploaded_at" in response.json()
     assert "size" in response.json()
@@ -441,9 +407,7 @@ async def test_read_file_info_from_others_storage_as_viewer(
     viewer_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "some_id"})
     response = await test_client.get(
         "/api/files",
         params={"filename": "text.txt", "user_id": "some_id"},
@@ -460,12 +424,8 @@ async def test_read_non_existent_file_info(
     viewer_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename="text.txt", source=f, metadata={"user_id": "some_id"}
-        )
-    response = await test_client.get(
-        "/api/files", params={"filename": "text.txt"}, headers=viewer_token_header
-    )
+        await test_db.grid_client.upload_from_stream(filename="text.txt", source=f, metadata={"user_id": "some_id"})
+    response = await test_client.get("/api/files", params={"filename": "text.txt"}, headers=viewer_token_header)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -490,9 +450,7 @@ async def test_read_file_info_list_as_admin(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "admin_id"}
         )
-    response = await test_client.get(
-        "/api/files/list/", params={}, headers=admin_token_header
-    )
+    response = await test_client.get("/api/files/list/", params={}, headers=admin_token_header)
     assert len(response.json()["files"]) == 3
 
 
@@ -506,9 +464,7 @@ async def test_read_file_info_list_from_others_storage_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -517,9 +473,7 @@ async def test_read_file_info_list_from_others_storage_as_admin(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "some_other_id"}
         )
-    response = await test_client.get(
-        "/api/files/list", params={"user_id": "some_id"}, headers=admin_token_header
-    )
+    response = await test_client.get("/api/files/list", params={"user_id": "some_id"}, headers=admin_token_header)
     assert len(response.json()["files"]) == 2
 
 
@@ -544,9 +498,7 @@ async def test_read_file_info_list_as_uploader(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "uploader_id"}
         )
-    response = await test_client.get(
-        "/api/files/list", params={}, headers=uploader_token_header
-    )
+    response = await test_client.get("/api/files/list", params={}, headers=uploader_token_header)
     assert len(response.json()["files"]) == 3
 
 
@@ -559,9 +511,7 @@ async def test_read_file_info_list_from_others_storage_as_uploader(
     audio_file: Path,
     uploader_token_header: str,
 ):
-    response = await test_client.get(
-        "/api/files/list", params={"user_id": "some_id"}, headers=uploader_token_header
-    )
+    response = await test_client.get("/api/files/list", params={"user_id": "some_id"}, headers=uploader_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -586,9 +536,7 @@ async def test_read_file_info_list_as_viewer(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "viewer_id"}
         )
-    response = await test_client.get(
-        "/api/files/list", params={}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/list", params={}, headers=viewer_token_header)
     assert len(response.json()["files"]) == 3
 
 
@@ -601,9 +549,7 @@ async def test_read_file_info_list_from_others_storage_as_viewer(
     audio_file: Path,
     viewer_token_header: str,
 ):
-    response = await test_client.get(
-        "/api/files/list", params={"user_id": "some_id"}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/list", params={"user_id": "some_id"}, headers=viewer_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -616,9 +562,7 @@ async def test_list_file_info_from_others_storage_as_viewer(
     audio_file: Path,
     viewer_token_header: str,
 ):
-    response = await test_client.get(
-        "/api/files/list", params={"user_id": "some_id"}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/list", params={"user_id": "some_id"}, headers=viewer_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -643,9 +587,7 @@ async def test_read_file_info_list_offset_limit(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "viewer_id"}
         )
-    response = await test_client.get(
-        "/api/files/list", params={"offset": 1, "limit": 2}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/list", params={"offset": 1, "limit": 2}, headers=viewer_token_header)
     assert len(response.json()["files"]) == 2
 
 
@@ -701,9 +643,7 @@ async def test_search_file_info_as_admin(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "admin_id"}
         )
-    response = await test_client.get(
-        "/api/files/search", params={"pattern": "text"}, headers=admin_token_header
-    )
+    response = await test_client.get("/api/files/search", params={"pattern": "text"}, headers=admin_token_header)
     assert len(response.json()["files"]) == 1
 
 
@@ -717,9 +657,7 @@ async def test_search_file_info_from_others_storage_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -757,9 +695,7 @@ async def test_search_file_info_as_uploader(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "uploader_id"}
         )
-    response = await test_client.get(
-        "/api/files/search", params={"pattern": "text"}, headers=uploader_token_header
-    )
+    response = await test_client.get("/api/files/search", params={"pattern": "text"}, headers=uploader_token_header)
     assert len(response.json()["files"]) == 1
 
 
@@ -772,9 +708,7 @@ async def test_list_file_info_from_others_storage_as_uploader(
     audio_file: Path,
     uploader_token_header: str,
 ):
-    response = await test_client.get(
-        "/api/files/list", params={"user_id": "some_id"}, headers=uploader_token_header
-    )
+    response = await test_client.get("/api/files/list", params={"user_id": "some_id"}, headers=uploader_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -799,9 +733,7 @@ async def test_search_file_info_as_viewer(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "viewer_id"}
         )
-    response = await test_client.get(
-        "/api/files/search", params={"pattern": "text"}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/search", params={"pattern": "text"}, headers=viewer_token_header)
     assert len(response.json()["files"]) == 1
 
 
@@ -850,9 +782,7 @@ async def test_delete_file_as_admin(
     )
     assert response.json()["filename"] == image_file.name
     # confirm it's deleted
-    assert not await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": image_file.name}
-    )
+    assert not await test_db.client["file_service"]["fs.files"].find_one({"filename": image_file.name})
 
 
 @pytest.mark.asyncio
@@ -865,9 +795,7 @@ async def test_delete_file_from_others_storage_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -883,15 +811,11 @@ async def test_delete_file_from_others_storage_as_admin(
     )
     assert response.json()["filename"] == image_file.name
     # confirm it's deleted
-    assert not await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": image_file.name}
-    )
+    assert not await test_db.client["file_service"]["fs.files"].find_one({"filename": image_file.name})
 
 
 @pytest.mark.asyncio
-async def test_delete_non_existent_file(
-    test_client: AsyncClient, test_db: MockDatabase, admin_token_header: str
-):
+async def test_delete_non_existent_file(test_client: AsyncClient, test_db: MockDatabase, admin_token_header: str):
     response = await test_client.delete(
         "/api/files",
         params={"filename": "non-existent-file", "user_id": "admin_id"},
@@ -928,9 +852,7 @@ async def test_delete_file_as_uploader(
     )
     assert response.json()["filename"] == audio_file.name
     # confirm it's deleted
-    assert not await test_db.client["file_service"]["fs.files"].find_one(
-        {"filename": audio_file.name}
-    )
+    assert not await test_db.client["file_service"]["fs.files"].find_one({"filename": audio_file.name})
 
 
 @pytest.mark.asyncio
@@ -959,9 +881,7 @@ async def test_delete_file_as_viewer(
     audio_file: Path,
     viewer_token_header: str,
 ):
-    response = await test_client.delete(
-        "/api/files", params={"filename": "some_file"}, headers=viewer_token_header
-    )
+    response = await test_client.delete("/api/files", params={"filename": "some_file"}, headers=viewer_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -1003,9 +923,7 @@ async def test_count_file_as_admin(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "admin_id"}
         )
-    response = await test_client.get(
-        "/api/files/count", params={}, headers=admin_token_header
-    )
+    response = await test_client.get("/api/files/count", params={}, headers=admin_token_header)
     assert response.json()["count"] == 3
 
 
@@ -1019,9 +937,7 @@ async def test_count_file_from_others_storage_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -1030,9 +946,7 @@ async def test_count_file_from_others_storage_as_admin(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "some_other_id"}
         )
-    response = await test_client.get(
-        "/api/files/count", params={"user_id": "some_id"}, headers=admin_token_header
-    )
+    response = await test_client.get("/api/files/count", params={"user_id": "some_id"}, headers=admin_token_header)
     assert response.json()["count"] == 2
 
 
@@ -1057,9 +971,7 @@ async def test_count_file_as_uploader(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "uploader_id"}
         )
-    response = await test_client.get(
-        "/api/files/count", params={}, headers=uploader_token_header
-    )
+    response = await test_client.get("/api/files/count", params={}, headers=uploader_token_header)
     assert response.json()["count"] == 3
 
 
@@ -1073,9 +985,7 @@ async def test_count_file_from_others_storage_as_uploader(
     uploader_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -1084,9 +994,7 @@ async def test_count_file_from_others_storage_as_uploader(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "some_other_id"}
         )
-    response = await test_client.get(
-        "/api/files/count", params={"user_id": "some_id"}, headers=uploader_token_header
-    )
+    response = await test_client.get("/api/files/count", params={"user_id": "some_id"}, headers=uploader_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -1111,9 +1019,7 @@ async def test_count_file_as_viewer(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "viewer_id"}
         )
-    response = await test_client.get(
-        "/api/files/count", params={}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/count", params={}, headers=viewer_token_header)
     assert response.json()["count"] == 3
 
 
@@ -1127,9 +1033,7 @@ async def test_count_file_from_others_storage_as_viewer(
     viewer_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -1138,9 +1042,7 @@ async def test_count_file_from_others_storage_as_viewer(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "some_other_id"}
         )
-    response = await test_client.get(
-        "/api/files/count", params={"user_id": "some_id"}, headers=viewer_token_header
-    )
+    response = await test_client.get("/api/files/count", params={"user_id": "some_id"}, headers=viewer_token_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
@@ -1154,9 +1056,7 @@ async def test_get_usage_as_admin(
     admin_token_header: str,
 ):
     with text_file.open("rb") as f:
-        await test_db.grid_client.upload_from_stream(
-            filename=text_file.name, source=f, metadata={"user_id": "some_id"}
-        )
+        await test_db.grid_client.upload_from_stream(filename=text_file.name, source=f, metadata={"user_id": "some_id"})
     with image_file.open("rb") as f:
         await test_db.grid_client.upload_from_stream(
             filename=image_file.name, source=f, metadata={"user_id": "some_id"}
@@ -1165,10 +1065,5 @@ async def test_get_usage_as_admin(
         await test_db.grid_client.upload_from_stream(
             filename=audio_file.name, source=f, metadata={"user_id": "some_other_id"}
         )
-    response = await test_client.get(
-        "/api/files/usage", params={"user_id": "some_id"}, headers=admin_token_header
-    )
-    assert (
-        response.json()["storage_used"]
-        == text_file.stat().st_size + image_file.stat().st_size
-    )
+    response = await test_client.get("/api/files/usage", params={"user_id": "some_id"}, headers=admin_token_header)
+    assert response.json()["storage_used"] == text_file.stat().st_size + image_file.stat().st_size

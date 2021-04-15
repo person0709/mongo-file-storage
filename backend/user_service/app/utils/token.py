@@ -38,9 +38,7 @@ def generate_jwt(user: User) -> Token:
     )
     return Token(
         token_type="bearer",
-        access_token=jwt.encode(
-            payload.dict(), key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
-        ),
+        access_token=jwt.encode(payload.dict(), key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM),
     )
 
 

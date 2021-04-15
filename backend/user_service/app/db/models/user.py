@@ -14,9 +14,7 @@ def generate_uuid():
 class User(Base):
     __tablename__ = "user"
 
-    user_id = Column(
-        String(36), primary_key=True, unique=True, index=True, default=generate_uuid
-    )
+    user_id = Column(String(36), primary_key=True, unique=True, index=True, default=generate_uuid)
     username = Column(String(32), unique=True, index=True, nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
     # storage allowance for the user in bytes(B)

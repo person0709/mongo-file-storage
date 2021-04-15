@@ -13,6 +13,4 @@ class UserFactory(factory.Factory):
     email = factory.Faker("email")
     hashed_password = factory.Faker("password")
     joined_at = factory.Faker("date_time_this_decade")
-    role = factory.Faker(
-        "random_element", elements=(Role.VIEWER, Role.UPLOADER, Role.ADMIN)
-    )
+    role = factory.Faker("random_element", elements=(Role.VIEWER, Role.UPLOADER, Role.ADMIN))

@@ -12,9 +12,7 @@ def test_add_user(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    user_added = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    user_added = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     assert user_added.email == mock_user.email
     assert user_added.role == Role.UPLOADER
     user_in_db = test_db.query(User).filter(User.email == mock_user.email).first()
@@ -27,15 +25,11 @@ def test_add_user_conflict(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    user_added = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    user_added = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     assert user_added.email == mock_user.email
     assert user_added.role == Role.UPLOADER
     # try adding the same user
-    user_added = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    user_added = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     assert not user_added
     user_in_db = test_db.query(User).filter(User.email == mock_user.email).first()
     assert user_in_db
@@ -47,9 +41,7 @@ def test_get_user_by_user_id(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    created_model = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    created_model = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     assert repo.get_user_by_user_id(user_id=created_model.user_id)
 
 
@@ -59,9 +51,7 @@ def test_get_user_by_username(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    created_model = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    created_model = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     assert repo.get_user_by_username(username=created_model.username)
 
 
@@ -209,13 +199,9 @@ def test_delete_user(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    added_user = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    added_user = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     repo.delete_user(user_id=added_user.user_id)
-    assert (
-        test_db.query(User).filter(User.user_id == added_user.user_id).first() is None
-    )
+    assert test_db.query(User).filter(User.user_id == added_user.user_id).first() is None
 
 
 def test_delete_user_not_found(test_db: Session):
@@ -233,9 +219,7 @@ def test_update_user_role(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    created_model = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    created_model = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     updated_model = repo.update_user(user_id=created_model.user_id, role=Role.UPLOADER)
     assert updated_model.role == Role.UPLOADER
 
@@ -246,12 +230,8 @@ def test_update_user_allowance(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    created_model = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
-    updated_model = repo.update_user(
-        user_id=created_model.user_id, storage_allowance=100
-    )
+    created_model = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
+    updated_model = repo.update_user(user_id=created_model.user_id, storage_allowance=100)
     assert updated_model.storage_allowance == 100
 
 
@@ -261,9 +241,7 @@ def test_update_user_active(test_db: Session):
     """
     repo = UserRepository(test_db)
     mock_user: User = UserFactory()
-    created_model = repo.add_user(
-        username=mock_user.username, email=mock_user.email, password="password"
-    )
+    created_model = repo.add_user(username=mock_user.username, email=mock_user.email, password="password")
     updated_model = repo.update_user(user_id=created_model.user_id, is_active=False)
     assert updated_model.is_active == 0
 
